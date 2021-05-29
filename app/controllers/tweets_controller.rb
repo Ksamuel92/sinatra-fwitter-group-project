@@ -22,3 +22,13 @@ post '/tweets' do
     tweet.save
     redirect to '/tweets'
 end
+
+get '/tweets/:id' do
+    if !logged_in?
+        redirect to '/login'
+    end
+    @tweet = Tweet.find_by_id(params[:id])
+    
+    erb :"tweets/show"
+end
+
