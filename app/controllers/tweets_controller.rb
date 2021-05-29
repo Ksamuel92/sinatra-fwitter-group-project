@@ -32,3 +32,11 @@ get '/tweets/:id' do
     erb :"tweets/show"
 end
 
+get '/tweets/:id/edit' do
+    if !logged_in?
+        redirect to '/login'
+    end
+
+    erb :"tweets/edit"
+end
+
