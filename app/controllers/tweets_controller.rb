@@ -9,4 +9,16 @@ get '/tweets' do
     erb :"tweets/index"
 end
 
+get '/tweets/new' do
+    if !logged_in?
+        redirect to '/login'
+    end
+
+    erb :"tweets/new"
+end
+
+post '/tweets' do
+    tweet = Tweet.new(params)
+    tweet.save
+    redirect to '/tweets'
 end
