@@ -1,0 +1,13 @@
+<h2> This is the show tweet page </h2>
+
+<p> This tweet was posted by <%=@tweet.user.username%> </p>
+
+<p> <%=@tweet.content%> </p>
+
+<% if current_user == @tweet.user %>
+<ul>
+    <li><a href="/tweets/<%= @tweet.id%>/edit"> Edit your tweet here </a> </li>
+    <li> Hate your tweet? Delete it!
+<form method ="POST" action ="tweets/<%= @tweet.id %>/delete">
+<input type="hidden" name="_method" value="delete">
+
