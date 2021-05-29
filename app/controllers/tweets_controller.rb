@@ -40,3 +40,15 @@ get '/tweets/:id/edit' do
     erb :"tweets/edit"
 end
 
+patch  '/tweets/:id' do
+    tweet = Tweet.find_by_id(params[:id])
+    tweet.update
+    redirect to "/tweets/#{tweet.id}"
+end
+
+delete '/tweets/:id' do
+    tweet = Tweet.find_by_id(params[:id])
+    tweet.delete
+    redirect to "/tweets"
+end
+
