@@ -1,5 +1,15 @@
-<h2> This is the tweet index page </h2>
+<h2> Welcome, <%= SessionHelper.current_user(session).username %>, this is the tweet index page </h2>
 <ul>
 
 <li><a href="/login">If you are already a user, click here to go to the login page </a></li>
 <li><a href="/signup">Sign up here!</a></li>
+</ul>
+
+<h2> Check these tweets </h2>
+<ul>
+<% @tweets.each do |tweet|%>
+<li><%= tweet.user %> </li>
+<li><%=  tweet.content  %> </li>
+<% end %>
+</ul>
+<p> <a href ="/users/<%= SessionHelper.current_user(session).slug %>"> Find your tweets here </a> </p>

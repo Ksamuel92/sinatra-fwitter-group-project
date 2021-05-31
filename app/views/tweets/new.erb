@@ -1,13 +1,10 @@
-<% if Helpers.is_logged_in?(session) %>
-<%= @error %>
+<% if SessionHelper.is_logged_in?(session) %>
   <form action='/tweets' method="post">
-    Content:
+    <label for="content">Content:</label>
     <input type="text" name="content"><br>
     Create Your Tweet:
 
     <input type="submit" name="submit" id="submit">
-
-    <input type="submit" name="submit">
 
   </form>
 

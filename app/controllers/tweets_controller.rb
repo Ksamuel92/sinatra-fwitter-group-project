@@ -1,16 +1,16 @@
 class TweetsController < ApplicationController
 
 get '/tweets' do
-    if !logged_in?
+    if !SessionHelper.is_logged_in?(session)
         redirect to '/login'
     end
-    @user = User.find(session[:user])
+    @user = User.find_by_id(session[:user_id])
     @tweets = Tweet.all
     erb :"tweets/index"
 end
 
 get '/tweets/new' do
-    if !logged_in?
+    if !SessionHelper.is_logged_in?(session)
         redirect to '/login'
     end
 
@@ -18,13 +18,18 @@ get '/tweets/new' do
 end
 
 post '/tweets' do
-    tweet = Tweet.new(params)
+    #  binding.pry
+    tweet = Tweet.new(content: params[:content])
+    tweet.user_id = session[:user_id]
+    if !tweet.save
+        redirect to '/tweets/new'
+    end
     tweet.save
     redirect to '/tweets'
 end
 
 get '/tweets/:id' do
-    if !logged_in?
+    if !SessionHelper.is_logged_in?(session)
         redirect to '/login'
     end
     @tweet = Tweet.find_by_id(params[:id])
@@ -33,23 +38,38 @@ get '/tweets/:id' do
 end
 
 get '/tweets/:id/edit' do
-    if !logged_in?
-        redirect to '/login'
+    if SessionHelper.is_logged_in?(session)
+      @tweet = Tweet.find_by_id(params[:id])
+      if @tweet && @tweet.user == SessionHelper.current_user(session)
+        erb :'tweets/edit'
+      else
+        redirect to '/tweets'
+      end
+    else
+      redirect to '/login'
     end
-
-    erb :"tweets/edit"
-end
+  end
 
 patch  '/tweets/:id' do
     tweet = Tweet.find_by_id(params[:id])
-    tweet.update
+    if !tweet.update(content: params[:content])
+        redirect to "/tweets/#{tweet.id}/edit"
+    end
+    tweet.update(content: params[:content])
+
     redirect to "/tweets/#{tweet.id}"
 end
 
 delete '/tweets/:id/delete' do
-    tweet = Tweet.find_by_id(params[:id])
-    tweet.delete
-    redirect to "/tweets"
-end
+    if SessionHelper.is_logged_in?(session)
+      @tweet = Tweet.find_by_id(params[:id])
+      if @tweet && @tweet.user == SessionHelper.current_user(session)
+        @tweet.delete
+      end
+      redirect to '/tweets'
+    else
+      redirect to '/login'
+    end
+  end
 end
 
